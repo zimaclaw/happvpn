@@ -8,11 +8,12 @@ updated: "2026-04-22T21:09:00Z"
 goal: Автоматическое переключение VPN-клиента Happ при потере/восстановлении соединения
 
 status:
-  overall: ready_for_testing
+  overall: research_complete_awaiting_input
   dockerfile: ready
   scripts: ready
   config: ready
   documentation: complete
+  cli_api: researched_pending_decision
 
 tasks:
   - id: task-1
@@ -44,13 +45,48 @@ tasks:
     notes: Service file с security hardening, resource limits, restart policy
 
   - id: task-5
+    description: Исследовать CLI API для управления Happ
+    status: done
+    owner: friday
+    completed: "2026-04-22T21:24:00Z"
+    notes: Найден happd daemon с Unix socket (/tmp/happd.sock). API не документирован. Отчёты в CLI_API_RESEARCH.md
+
+  - id: task-6
     description: Проверить работоспособность скриптов в production
     status: pending
     owner: friday
     depends_on: [task-2, task-3, task-4]
     next_action: "Запустить контейнер в тестовом режиме, проверить логи"
 
-open_questions: []
+  - id: task-7
+    description: Реализовать выбор VPN сервера
+    status: blocked
+    owner: friday
+    depends_on: [task-5]
+    blocked_by: "Open Questions в CLI_API_RESEARCH.md требуют ответов от Олега"
+    next_action: "Получить ответы на Q1-Q4 → выбрать вариант реализации → написать скрипт"
+
+open_questions:
+  - id: q1
+    question: Есть ли доступ к Happ GUI для исследования настроек ротации серверов?
+    priority: high
+    context: "Нужно понять есть ли встроенная логика выбора сервера в GUI"
+    created: "2026-04-22T21:24:00Z"
+  - id: q2
+    question: Нужна ли автоматическая ротация между серверами? (нет / периодическая / по доступности / round-robin)
+    priority: high
+    context: "Влияет на архитектуру решения — простой failover vs сложная система мониторинга"
+    created: "2026-04-22T21:24:00Z"
+  - id: q3
+    question: Хочешь ли протестировать happd socket API (/tmp/happd.sock)?
+    priority: medium
+    context: "API не документирован, требуется reverse engineering через тестирование"
+    created: "2026-04-22T21:24:00Z"
+  - id: q4
+    question: Приоритет задач: работоспособный VPN / идеальная ротация / CLI управление / интеграция с GUI?
+    priority: medium
+    context: "Определяет фокус разработки на следующий этап"
+    created: "2026-04-22T21:24:00Z"
 
 dependencies:
   - happ.linux.x64.deb: present (71MB)
