@@ -63,8 +63,10 @@ tasks:
     status: in_progress
     owner: friday
     depends_on: [task-5]
-    decision: "Использовать Xray-core напрямую — один сервер, без ротации, failover при падении"
-    next_action: "Создать xray-config.json с одним сервером из key.txt → протестировать"
+    decision: "Использовать Xray-core напрямую — один сервер, без ротации"
+    primary_server: "🇳🇱 Амстердам, Нидерланды (cdn3-87.vk-cdnvideo.com:8443)"
+    fallback_server: "Нет (записано в FUTURE_IMPROVEMENTS.md как P1 улучшение)"
+    next_action: "Создать xray-config.json с сервером в Нидерландах → протестировать"
 
 open_questions: []
 
