@@ -1,0 +1,28 @@
+[Unit]
+Description=Happ Process Control Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/opt/happ/bin/happd
+Restart=on-failure
+RestartSec=5s
+
+# Security settings
+NoNewPrivileges=false
+# Daemon needs to run privileged processes (sing-box with TUN)
+# So we cannot use strict sandboxing
+
+# Logging is handled by the daemon's custom message handler
+# which writes to /var/log/happd.log directly
+# StandardOutput and StandardError left to journal for systemctl status
+
+# Process settings
+TimeoutStopSec=10s
+KillMode=mixed
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target
