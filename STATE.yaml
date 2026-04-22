@@ -8,11 +8,11 @@ updated: "2026-04-22T21:09:00Z"
 goal: Автоматическое переключение VPN-клиента Happ при потере/восстановлении соединения
 
 status:
-  overall: in_progress
+  overall: ready_for_testing
   dockerfile: ready
   scripts: ready
-  config: missing
-  documentation: incomplete
+  config: ready
+  documentation: complete
 
 tasks:
   - id: task-1
