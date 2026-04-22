@@ -60,33 +60,35 @@ tasks:
 
   - id: task-7
     description: Реализовать выбор VPN сервера
-    status: blocked
+    status: in_progress
     owner: friday
     depends_on: [task-5]
-    blocked_by: "Open Questions в CLI_API_RESEARCH.md требуют ответов от Олега"
-    next_action: "Получить ответы на Q1-Q4 → выбрать вариант реализации → написать скрипт"
+    decision: "Использовать Xray-core напрямую — один сервер, без ротации, failover при падении"
+    next_action: "Создать xray-config.json с одним сервером из key.txt → протестировать"
 
-open_questions:
-  - id: q1
-    question: Есть ли доступ к Happ GUI для исследования настроек ротации серверов?
-    priority: high
-    context: "Нужно понять есть ли встроенная логика выбора сервера в GUI"
-    created: "2026-04-22T21:24:00Z"
-  - id: q2
-    question: Нужна ли автоматическая ротация между серверами? (нет / периодическая / по доступности / round-robin)
-    priority: high
-    context: "Влияет на архитектуру решения — простой failover vs сложная система мониторинга"
-    created: "2026-04-22T21:24:00Z"
-  - id: q3
-    question: Хочешь ли протестировать happd socket API (/tmp/happd.sock)?
-    priority: medium
-    context: "API не документирован, требуется reverse engineering через тестирование"
-    created: "2026-04-22T21:24:00Z"
-  - id: q4
-    question: Приоритет задач: работоспособный VPN / идеальная ротация / CLI управление / интеграция с GUI?
-    priority: medium
-    context: "Определяет фокус разработки на следующий этап"
-    created: "2026-04-22T21:24:00Z"
+open_questions: []
+
+decisions:
+  - id: d1
+    question_id: q1
+    answer: "Нет доступа к GUI сейчас, но возможно в будущем"
+    decided: "2026-04-22T21:34:00Z"
+    impact: "Не можем исследовать встроенную логику Happ, используем Xray-core напрямую"
+  - id: d2
+    question_id: q2
+    answer: "Нет ротации серверов — достаточно одного работающего"
+    decided: "2026-04-22T21:34:00Z"
+    impact: "Упрощаем архитектуру: один сервер, failover при падении"
+  - id: d3
+    question_id: q3
+    answer: "Пока не тестировать happd socket API"
+    decided: "2026-04-22T21:34:00Z"
+    impact: "Используем документированный Xray-core вместо reverse engineering"
+  - id: d4
+    question_id: q4
+    answer: "Приоритет: работоспособный VPN"
+    decided: "2026-04-22T21:34:00Z"
+    impact: "Фокус на минимальное рабочее решение без излишних фич"
 
 dependencies:
   - happ.linux.x64.deb: present (71MB)
