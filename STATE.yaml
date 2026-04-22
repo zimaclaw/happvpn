@@ -1,0 +1,63 @@
+# STATE.yaml — Трекинг состояния проекта happvpn
+# Обновляется автоматически при изменениях
+
+project: happvpn
+version: "1.0"
+updated: "2026-04-22T21:09:00Z"
+
+goal: Автоматическое переключение VPN-клиента Happ при потере/восстановлении соединения
+
+status:
+  overall: in_progress
+  dockerfile: ready
+  scripts: ready
+  config: missing
+  documentation: incomplete
+
+tasks:
+  - id: task-1
+    description: Создать STATE.yaml для трекинга состояния проекта
+    status: done
+    owner: friday
+    completed: "2026-04-22T21:09:00Z"
+    notes: Файл создан
+
+  - id: task-2
+    description: Создать QUICKSTART.md с инструкциями по установке
+    status: done
+    owner: friday
+    completed: "2026-04-22T21:09:00Z"
+    notes: Создан подробный гайд для Docker и systemd
+
+  - id: task-3
+    description: Создать scripts/happ-config.yaml — конфигурация контейнера
+    status: done
+    owner: friday
+    completed: "2026-04-22T21:09:00Z"
+    notes: YAML конфиг с параметрами: порты, задержки, логирование, безопасность
+
+  - id: task-4
+    description: Создать systemd/happ-monitor.service — юнит для systemd
+    status: done
+    owner: friday
+    completed: "2026-04-22T21:09:00Z"
+    notes: Service file с security hardening, resource limits, restart policy
+
+  - id: task-5
+    description: Проверить работоспособность скриптов в production
+    status: pending
+    owner: friday
+    depends_on: [task-2, task-3, task-4]
+    next_action: "Запустить контейнер в тестовом режиме, проверить логи"
+
+open_questions: []
+
+dependencies:
+  - happ.linux.x64.deb: present (71MB)
+  - key.txt: present (~60 серверов vless)
+  - extracted/: present (Happ, happd, happ-tcping бинарники)
+
+known_issues:
+  - Dockerfile ссылается на scripts/happ-config.yaml — файл отсутствует
+  - README.md упоминает QUICKSTART.md и systemd/happ-monitor.service — файлы отсутствуют
+  - entrypoint.sh ожидает config.yaml в /opt/happ — путь отличается от Dockerfile

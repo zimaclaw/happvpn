@@ -1,0 +1,120 @@
+# happ-config.yaml — Конфигурация happvpn контейнера
+# Используется: Dockerfile COPY, entrypoint.sh валидация
+
+version: "1.0"
+updated: "2026-04-22T21:09:00Z"
+
+# --- Network Configuration ---
+network:
+  # Порт SOCKS5 прокси (по умолчанию 10808)
+  proxy_port: 10808
+  
+  # Адрес привязки прокси (0.0.0.0 для всех интерфейсов)
+  bind_address: "0.0.0.0"
+  
+  # Включить управление iptables (требует --cap-add=NET_ADMIN)
+  enable_iptables: false
+  
+  # NAT правила для перенаправления трафика (если enable_iptables: true)
+  iptables_rules:
+    redirect_all_traffic: false
+    bypass_local_network: true
+    local_networks:
+      - "192.168.0.0/16"
+      - "10.0.0.0/8"
+      - "172.16.0.0/12"
+
+# --- Monitoring Configuration ---
+monitor:
+  # Интервал проверки (секунды)
+  check_interval: 60
+  
+  # Задержка перед переключением в OFF (секунды)
+  down_delay: 420  # 7 минут
+  
+  # Задержка перед переключением в ON (секунды)
+  up_delay: 120  # 2 минуты
+  
+  # Процесс для мониторинга
+  process_name: "Happ"
+  
+  # Проверка по порту (true/false)
+  check_port: true
+
+# --- Logging Configuration ---
+logging:
+  # Директория для логов
+  log_dir: "/var/log/happvpn"
+  
+  # Файл логов монитора
+  monitor_log: "monitor.log"
+  
+  # Файл логов менеджера прокси
+  proxy_manager_log: "proxy-manager.log"
+  
+  # Уровень логирования (debug/info/warn/error)
+  level: "info"
+  
+  # Ротация логов
+  rotation:
+    enabled: true
+    max_size_mb: 10
+    max_files: 5
+
+# --- State Management ---
+state:
+  # Файл состояния
+  state_file: "/opt/happvpn/state.json"
+  
+  # Начальное состояние (on/off)
+  initial_status: "on"
+  
+  # Автостарт при запуске контейнера
+  auto_start: true
+
+# --- Server Configuration ---
+servers:
+  # Путь к файлу с серверными ключами
+  keys_file: "/opt/happvpn/key.txt"
+  
+  # Формат ключей (vless/vmess)
+  key_format: "vless"
+  
+  # Количество серверов для ротации
+  rotation_count: 60
+  
+  # Валидация ключей перед использованием
+  validate_keys: true
+
+# --- Security ---
+security:
+  # Non-root пользователь (UID)
+  user_uid: 1001
+  
+  # Non-root пользователь (GID)
+  user_gid: 1001
+  
+  # Имя пользователя
+  username: "happuser"
+  
+  # Ограничения на ресурсы
+  resource_limits:
+    memory_limit: "512M"
+    cpu_limit: "0.5"
+
+# --- Advanced ---
+advanced:
+  # Включить watchdog для перезапуска при краше
+  watchdog_enabled: true
+  
+  # Максимальное количество перезапусков перед остановкой
+  max_restarts: 5
+  
+  # Интервал между перезапусками (секунды)
+  restart_delay: 30
+  
+  # Уведомления о срабатывании алертов
+  alerts:
+    enabled: false
+    webhook_url: ""
+    email: ""

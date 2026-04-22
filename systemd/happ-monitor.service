@@ -1,0 +1,44 @@
+[Unit]
+Description=Happ VPN Auto-Switch Monitor
+Documentation=file:///opt/happvpn/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=happuser
+Group=happuser
+WorkingDirectory=/opt/happvpn
+
+# Environment variables
+Environment="HAPP_DIR=/opt/happvpn"
+Environment="HAPP_PORT=10808"
+Environment="ENABLE_IPTABLES=false"
+
+# Executable
+ExecStart=/opt/happvpn/scripts/happ-monitor.sh
+Restart=on-failure
+RestartSec=30
+
+# Resource limits
+MemoryLimit=512M
+CPUQuota=50%
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+ReadWritePaths=/opt/happvpn /var/log/happvpn
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=happ-monitor
+
+# Restart policy
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
