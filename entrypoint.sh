@@ -10,7 +10,8 @@ MONITOR_SCRIPT="${HAPP_DIR}/scripts/happ-monitor.sh"
 # 1️⃣ Проверка обязательных файлов
 [[ -f "$XRAY_BIN" ]] || { echo "ERROR: xray binary missing" >&2; exit 1; }
 [[ -f "$XRAY_CONFIG" ]] || { echo "ERROR: config.json missing" >&2; exit 1; }
-[[ -f "$XRAY_BIN/../core/geoip.dat" ]] || { echo "ERROR: geoip.dat missing" >&2; exit 1; }
+[[ -f "${HAPP_DIR}/geoip.dat" ]] || { echo "ERROR: geoip.dat missing" >&2; exit 1; }
+[[ -f "${HAPP_DIR}/geosite.dat" ]] || { echo "ERROR: geosite.dat missing" >&2; exit 1; }
 
 echo "=== Starting Xray-core VPN ==="
 echo "Xray binary: $XRAY_BIN"
