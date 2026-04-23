@@ -5,6 +5,9 @@
 
 set -e
 
+# Определяем домашнюю директорию (работает и с sudo)
+HOME_DIR="${HOME:-/home/jarvis}"
+
 echo "=== Тест happvpn ==="
 echo "Порты: 11808 (SOCKS5), 11809 (HTTP)"
 echo "Маршрутизация: .ru/.su → direct, остальное → VPN"
@@ -12,7 +15,7 @@ echo ""
 
 # 1. Обновить репозиторий
 echo "📥 Обновление репозитория..."
-cd ~/happvpn
+cd "$HOME_DIR/happvpn" || { echo "❌ Папка $HOME_DIR/happvpn не найдена"; exit 1; }
 git pull origin main || { echo "❌ Ошибка git pull"; exit 1; }
 
 # 2. Остановить и удалить старый контейнер
