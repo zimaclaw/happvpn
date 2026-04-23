@@ -15,7 +15,7 @@
   },
   "inbounds": [
     {
-      "port": 11808,
+      "port": 10808,
       "protocol": "socks",
       "settings": {
         "auth": "noauth",
@@ -31,7 +31,7 @@
       }
     },
     {
-      "port": 11809,
+      "port": 10809,
       "protocol": "http",
       "settings": {
         "allowTransparent": true

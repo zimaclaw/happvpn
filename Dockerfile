@@ -16,9 +16,7 @@ ENV HAPP_DIR=/opt/happvpn
 ENV STATE_FILE=/opt/happvpn/state.json
 ENV LOG_DIR=/var/log/happvpn
 ENV XRAY_CONFIG=/opt/happvpn/config.json
-# TEMPORARY: Ports changed to 11808/11809 to avoid conflict with running VPN.
-# Will revert to 10808/10809 after testing.
-ENV HAPP_PORT=11808
+ENV HAPP_PORT=10808
 
 # Create non‑root user for security
 RUN useradd --uid 1001 --create-home happuser && \

@@ -95,7 +95,6 @@ sudo docker run -d \
     --cap-add NET_RAW \
     -p 10808:10808 \
     -p 10809:10809 \
-    -v /var/log/happvpn:/var/log/happvpn \
     -e HAPP_PORT=10808 \
     -e ENABLE_IPTABLES=false \
     happvpn:latest
