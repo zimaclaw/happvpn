@@ -16,6 +16,9 @@ ENV HAPP_DIR=/opt/happvpn
 ENV STATE_FILE=/opt/happvpn/state.json
 ENV LOG_DIR=/var/log/happvpn
 ENV XRAY_CONFIG=/opt/happvpn/config.json
+# TEMPORARY: Ports changed to 11808/11809 to avoid conflict with running VPN.
+# Will revert to 10808/10809 after testing.
+ENV HAPP_PORT=11808
 
 # Create non‑root user for security
 RUN useradd --uid 1001 --create-home happuser && \
@@ -38,8 +41,8 @@ RUN apt-get update && \
 # ---- Copy Xray-core binaries ----------------------------------------------
 # Xray-core from Happ package
 COPY extracted/opt/happ/bin/core/xray ${HAPP_DIR}/xray
-COPY extracted/opt/happ/bin/core/geoip.dat ${HAPP_DIR}/core/geoip.dat
-COPY extracted/opt/happ/bin/core/geosite.dat ${HAPP_DIR}/core/geosite.dat
+COPY extracted/opt/happ/bin/core/geoip.dat ${HAPP_DIR}/geoip.dat
+COPY extracted/opt/happ/bin/core/geosite.dat ${HAPP_DIR}/geosite.dat
 COPY extracted/opt/happ/bin/core/routing ${HAPP_DIR}/core/routing
 
 RUN chmod +x ${HAPP_DIR}/xray

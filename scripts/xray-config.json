@@ -15,7 +15,7 @@
   },
   "inbounds": [
     {
-      "port": 10808,
+      "port": 11808,
       "protocol": "socks",
       "settings": {
         "auth": "noauth",
@@ -31,7 +31,7 @@
       }
     },
     {
-      "port": 10809,
+      "port": 11809,
       "protocol": "http",
       "settings": {
         "allowTransparent": true
@@ -84,8 +84,31 @@
     "rules": [
       {
         "type": "field",
+        "protocol": [
+          "dns"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
         "ip": [
           "geoip:private"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "domain": [
+          "geosite:ru",
+          "geosite:su"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "ip": [
+          "geoip:ru",
+          "geoip:su"
         ],
         "outboundTag": "direct"
       },
@@ -95,13 +118,10 @@
       }
     ]
   },
-  "observatory": {
-    "enabled": true,
-    "subjectSelector": [
-      "primary"
-    ],
-    "probeInterval": "30s",
-    "probeUrl": "https://www.google.com/favicon.ico"
+  "appStats": {
+    "stats": {
+      "enable": true
+    }
   },
   "policy": {
     "levels": {
