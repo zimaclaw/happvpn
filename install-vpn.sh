@@ -32,10 +32,13 @@ if [ "$FILE_SIZE" -lt 50000000 ]; then
 fi
 echo "✅ Файл скачан: $FILE_SIZE bytes"
 
-# Шаг 2: Установить зависимости для распаковки
-echo "📦 Установка зависимостей..."
-sudo apt-get update -qq
-sudo apt-get install -y -qq dpkg-deb > /dev/null
+# Шаг 2: Проверка наличия dpkg-deb (обычно уже установлен)
+echo "📦 Проверка зависимостей..."
+if ! command -v dpkg-deb &> /dev/null; then
+    echo "⚠️ dpkg-deb не найден, устанавливаю dpkg..."
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq dpkg > /dev/null
+fi
 
 # Шаг 3: Распаковать deb пакет
 echo "📦 Распаковка Happ.linux.x64.deb..."
