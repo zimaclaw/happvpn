@@ -1,0 +1,16 @@
+# Пример формата ключа VLESS для Happ VPN
+# 
+# Инструкция:
+# 1. Скопируйте этот файл в key.txt: cp key.example.txt key.txt
+# 2. Замените YOUR-UUID-HERE на ваш реальный UUID
+# 3. Замените example.com:8443 на адрес вашего VPN сервера
+# 4. Файл key.txt не комmittится в git (добавлен в .gitignore)
+#
+# Формат: vless://UUID@host:port?type=tcp&path=%2F&security=tls&alpn=h2#Comment
+#
+# Примеры серверов из реального key.txt:
+# - cdn3-87.vk-cdnvideo.com:8443 (Нидерланды)
+# - cdn1-08.vk-cdnvideo.com:8443 (Германия)
+# - cdn9-20.vk-cdnvideo.com:8443 (Сингапур)
+
+vless://YOUR-UUID-HERE@cdn3-87.vk-cdnvideo.com:8443?type=tcp&path=%2F&security=tls&alpn=h2#Example-Netherlands

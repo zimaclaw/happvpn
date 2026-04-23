@@ -1,0 +1,23 @@
+# Секретные файлы
+key.txt
+
+# Логи
+*.log
+logs/
+
+# Временные файлы
+*.tmp
+temp/
+
+# Docker volumes
+/var/log/happvpn/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
