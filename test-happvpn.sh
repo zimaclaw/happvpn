@@ -5,12 +5,19 @@
 
 set -e
 
-# Определяем домашнюю директорию (работает и с sudo)
-HOME_DIR="${HOME:-/home/jarvis}"
+# Определяем домашнюю директорию (работает и с sudo и без)
+if [ -n "$SUDO_USER" ]; then
+    # Запущен с sudo — используем пользователя который вызвал sudo
+    HOME_DIR="/home/$SUDO_USER"
+else
+    # Запущен без sudo — используем текущего пользователя
+    HOME_DIR="$HOME"
+fi
 
 echo "=== Тест happvpn ==="
 echo "Порты: 11808 (SOCKS5), 11809 (HTTP)"
 echo "Маршрутизация: .ru/.su → direct, остальное → VPN"
+echo "Рабочая директория: $HOME_DIR/happvpn"
 echo ""
 
 # 1. Обновить репозиторий
