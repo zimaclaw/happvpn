@@ -38,8 +38,18 @@ RUN apt-get update && \
 # ---- Copy extracted Happ binaries ------------------------------------
 # The build context must contain the folder 'extracted' produced by the
 # tar/zstd extraction steps described earlier.
-COPY extracted/* ${HAPP_DIR}/
-RUN chmod +x ${HAPP_DIR}/happ ${HAPP_DIR}/happd ${HAPP_DIR}/scripts/*.sh
+# Structure: extracted/opt/happ/bin/{Happ, happd, happ-tcping}
+COPY extracted/opt/happ/bin/Happ ${HAPP_DIR}/Happ
+COPY extracted/opt/happ/bin/happd ${HAPP_DIR}/happd
+COPY extracted/opt/happ/bin/happ-tcping ${HAPP_DIR}/happ-tcping
+COPY extracted/opt/happ/lib ${HAPP_DIR}/lib
+COPY extracted/opt/happ/bin/core ${HAPP_DIR}/core
+COPY extracted/opt/happ/bin/antifilter ${HAPP_DIR}/antifilter
+COPY extracted/opt/happ/bin/tun ${HAPP_DIR}/tun
+COPY extracted/opt/happ/bin/tun2 ${HAPP_DIR}/tun2
+COPY extracted/opt/happ/bin/qt.conf ${HAPP_DIR}/qt.conf
+
+RUN chmod +x ${HAPP_DIR}/Happ ${HAPP_DIR}/happd ${HAPP_DIR}/happ-tcping
 
 # ---- Copy configuration & helper scripts ----------------------------
 COPY key.txt ${HAPP_DIR}/key.txt
