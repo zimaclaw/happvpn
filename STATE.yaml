@@ -3,7 +3,7 @@
 
 project: happvpn
 version: "1.0"
-updated: "2026-04-22T21:09:00Z"
+updated: "2026-04-23T12:15:00Z"
 
 goal: Автоматическое переключение VPN-клиента Happ при потере/восстановлении соединения
 
@@ -60,13 +60,27 @@ tasks:
 
   - id: task-7
     description: Реализовать выбор VPN сервера
-    status: in_progress
+    status: done
     owner: friday
     depends_on: [task-5]
     decision: "Использовать Xray-core напрямую — один сервер, без ротации"
     primary_server: "🇳🇱 Амстердам, Нидерланды (cdn3-87.vk-cdnvideo.com:8443)"
     fallback_server: "Нет (записано в FUTURE_IMPROVEMENTS.md как P1 улучшение)"
-    next_action: "Создать xray-config.json с сервером в Нидерландах → протестировать"
+    completed: "2026-04-23T12:15:00Z"
+    notes: xray-config.json создан и протестирован
+
+  - id: task-8
+    description: Удалить key.txt из git истории (public repo)
+    status: done
+    owner: friday
+    depends_on: []
+    completed: "2026-04-23T12:15:00Z"
+    notes:
+      - git-filter-repo использован для полного удаления из истории
+      - .gitignore создан
+      - key.example.txt создан с документацией
+      - Форс-пуш выполнен в origin/main
+    next_action: ""
 
 open_questions: []
 
