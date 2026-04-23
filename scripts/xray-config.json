@@ -79,7 +79,7 @@
       "tag": "block"
     }
   ],
-  "routing": {
+   "routing": {
     "domainStrategy": "IPOnDemand",
     "rules": [
       {
