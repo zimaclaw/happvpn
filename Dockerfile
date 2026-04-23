@@ -60,7 +60,7 @@ COPY scripts/happ-config.yaml ${HAPP_DIR}/config.yaml
 # Apply executable permissions
 RUN chmod +x ${HAPP_DIR}/scripts/happ-monitor.sh && \
     chmod +x ${HAPP_DIR}/scripts/happ-proxy-manager.sh && \
-    chmod +x ${HAPP_DIR}/happ ${HAPP_DIR}/happd
+    chmod +x ${HAPP_DIR}/Happ ${HAPP_DIR}/happd ${HAPP_DIR}/happ-tcping
 
 # ---- Create runtime directory for logs ------------------------------------
 RUN touch $LOG_DIR/monitor.log && \
