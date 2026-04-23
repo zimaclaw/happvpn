@@ -41,11 +41,15 @@ RUN apt-get update && \
 # ---- Copy Xray-core binaries ----------------------------------------------
 # Xray-core from Happ package
 COPY extracted/opt/happ/bin/core/xray ${HAPP_DIR}/xray
-COPY extracted/opt/happ/bin/core/geoip.dat ${HAPP_DIR}/geoip.dat
-COPY extracted/opt/happ/bin/core/geosite.dat ${HAPP_DIR}/geosite.dat
 COPY extracted/opt/happ/bin/core/routing ${HAPP_DIR}/core/routing
 
 RUN chmod +x ${HAPP_DIR}/xray
+
+# ---- Download fresh geoip/geosite data ------------------------------------
+# Using Loyalsoldier's v2ray-rules-dat (compatible with Xray)
+RUN wget -qO ${HAPP_DIR}/geoip.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat && \
+    wget -qO ${HAPP_DIR}/geosite.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat && \
+    echo "✅ geoip.dat and geosite.dat downloaded"
 
 # ---- Copy configuration & helper scripts ----------------------------------
 COPY key.txt ${HAPP_DIR}/key.txt
