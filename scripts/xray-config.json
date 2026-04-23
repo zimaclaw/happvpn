@@ -98,22 +98,6 @@
       },
       {
         "type": "field",
-        "domain": [
-          "geosite:ru",
-          "geosite:su"
-        ],
-        "outboundTag": "direct"
-      },
-      {
-        "type": "field",
-        "ip": [
-          "geoip:ru",
-          "geoip:su"
-        ],
-        "outboundTag": "direct"
-      },
-      {
-        "type": "field",
         "outboundTag": "primary"
       }
     ]
