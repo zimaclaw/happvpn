@@ -18,15 +18,15 @@ echo "Xray binary: $XRAY_BIN"
 echo "Config: $XRAY_CONFIG"
 echo "Logs: $LOG_DIR"
 
-# 2️⃣ Запуск Xray-core в фоне
+# 2️⃣ Запуск Xray-core в фоне (stdout/stderr в log файл)
 echo "🚀 Launching Xray-core..."
-"$XRAY_BIN" run -c "$XRAY_CONFIG" &
+"$XRAY_BIN" run -c "$XRAY_CONFIG" > "$LOG_DIR/xray.log" 2>&1 &
 XRAY_PID=$!
 echo "✅ Xray-core started (PID: $XRAY_PID)"
 
 # 3️⃣ Запуск мониторинга в фоне
 echo "📊 Starting monitor..."
-"$MONITOR_SCRIPT" &
+"$MONITOR_SCRIPT" >> "$LOG_DIR/monitor.log" 2>&1 &
 MONITOR_PID=$!
 echo "✅ Monitor started (PID: $MONITOR_PID)"
 
@@ -43,8 +43,14 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-# 5️⃣ Tail logs (позволяет видеть live‑логи)
+# 5️⃣ Keep container running — watch logs if they exist
 echo ""
-echo "📋 Watching logs (press Ctrl+C to stop)..."
+echo "📋 Services started. Container running in foreground..."
 echo "=========================================="
-exec tail -f "$LOG_DIR/error.log" "$LOG_DIR/monitor.log"
+echo "Use 'docker logs happvpn' to view logs"
+echo "Press Ctrl+C to stop"
+
+# Simple sleep loop to keep container alive
+while true; do
+    sleep 3600
+done
