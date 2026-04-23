@@ -18,15 +18,15 @@ echo "Xray binary: $XRAY_BIN"
 echo "Config: $XRAY_CONFIG"
 echo "Logs: $LOG_DIR"
 
-# 2️⃣ Запуск Xray-core в фоне (stdout/stderr в log файл)
+# 2️⃣ Запуск Xray-core в фоне (stdout/stderr в Docker log)
 echo "🚀 Launching Xray-core..."
-"$XRAY_BIN" run -c "$XRAY_CONFIG" > "$LOG_DIR/xray.log" 2>&1 &
+"$XRAY_BIN" run -c "$XRAY_CONFIG" &
 XRAY_PID=$!
 echo "✅ Xray-core started (PID: $XRAY_PID)"
 
 # 3️⃣ Запуск мониторинга в фоне
 echo "📊 Starting monitor..."
-"$MONITOR_SCRIPT" >> "$LOG_DIR/monitor.log" 2>&1 &
+"$MONITOR_SCRIPT" &
 MONITOR_PID=$!
 echo "✅ Monitor started (PID: $MONITOR_PID)"
 

@@ -64,11 +64,8 @@ RUN touch $LOG_DIR/monitor.log && \
     touch $LOG_DIR/access.log && \
     touch $LOG_DIR/error.log && \
     touch $LOG_DIR/xray.log && \
-    chown -R happuser:happuser $LOG_DIR && \
-    chmod 777 $LOG_DIR
+    chown -R happuser:happuser $LOG_DIR
 
-# ---- Switch to non‑root user ---------------------------------------------
-USER happuser
 WORKDIR $HAPP_DIR
 
 # ---- Entrypoint -----------------------------------------------------------

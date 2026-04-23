@@ -47,7 +47,6 @@ sudo docker run -d \
     --cap-add NET_RAW \
     -p 11808:11808 \
     -p 11809:11809 \
-    -v /var/log/happvpn:/var/log/happvpn \
     -e HAPP_PORT=11808 \
     happvpn:latest || { echo "❌ Ошибка запуска"; exit 1; }
 
