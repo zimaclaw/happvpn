@@ -44,10 +44,10 @@ fi
 echo "📦 Распаковка Happ.linux.x64.deb..."
 if [ -d "extracted" ]; then
     echo "⚠️  Папка extracted уже существует, удаляю..."
-    rm -rf extracted
+    sudo rm -rf extracted
 fi
 
-dpkg-deb -x Happ.linux.x64.deb extracted/
+sudo dpkg-deb -x Happ.linux.x64.deb extracted/
 
 if [ ! -f "extracted/opt/happ/bin/happd" ]; then
     echo "❌ Ошибка: не удалось распаковать Happ.linux.x64.deb"
