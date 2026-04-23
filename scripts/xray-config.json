@@ -1,0 +1,120 @@
+{
+  "log": {
+    "loglevel": "warning",
+    "access": "/var/log/happvpn/access.log",
+    "error": "/var/log/happvpn/error.log"
+  },
+  "dns": {
+    "servers": [
+      "8.8.8.8",
+      "1.1.1.1"
+    ],
+    "policy": {
+      ".": "remote"
+    }
+  },
+  "inbounds": [
+    {
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      }
+    },
+    {
+      "port": 10809,
+      "protocol": "http",
+      "settings": {
+        "allowTransparent": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "cdn3-87.vk-cdnvideo.com",
+            "port": 8443,
+            "users": [
+              {
+                "id": "19d50d78-36c3-4de9-bee8-b14bf44f6bd2",
+                "encryption": "none",
+                "level": 8
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "allowInsecure": false,
+          "alpn": [
+            "h2"
+          ]
+        }
+      },
+      "tag": "primary"
+    },
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "block"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPOnDemand",
+    "rules": [
+      {
+        "type": "field",
+        "ip": [
+          "geoip:private"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
+        "outboundTag": "primary"
+      }
+    ]
+  },
+  "observatory": {
+    "enabled": true,
+    "subjectSelector": [
+      "primary"
+    ],
+    "probeInterval": "30s",
+    "probeUrl": "https://www.google.com/favicon.ico"
+  },
+  "policy": {
+    "levels": {
+      "8": {
+        "handshake": 4,
+        "connIdle": 300,
+        "uplinkOnly": 1,
+        "downlinkOnly": 1
+      }
+    },
+    "system": {
+      "statsOutboundUplink": true,
+      "statsOutboundDownlink": true
+    }
+  }
+}

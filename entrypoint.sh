@@ -1,29 +1,49 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-HAPP_DIR="/opt/happ"
+HAPP_DIR="/opt/happvpn"
+LOG_DIR="/var/log/happvpn"
+XRAY_BIN="${HAPP_DIR}/xray"
+XRAY_CONFIG="${HAPP_DIR}/config.json"
+MONITOR_SCRIPT="${HAPP_DIR}/scripts/happ-monitor.sh"
 
 # 1️⃣ Проверка обязательных файлов
-[[ -f "${HAPP_DIR}/key.txt" ]]      || { echo "ERROR: key.txt missing" >&2; exit 1; }
-[[ -f "${HAPP_DIR}/config.yaml" ]]  || { echo "ERROR: config.yaml missing" >&2; exit 1; }
+[[ -f "$XRAY_BIN" ]] || { echo "ERROR: xray binary missing" >&2; exit 1; }
+[[ -f "$XRAY_CONFIG" ]] || { echo "ERROR: config.json missing" >&2; exit 1; }
+[[ -f "$XRAY_BIN/../core/geoip.dat" ]] || { echo "ERROR: geoip.dat missing" >&2; exit 1; }
 
-# 2️⃣ Если пользователь включил iptables‑менеджмент, проверяем наличие CAP
-if [[ "${ENABLE_IPTABLES}" == "true" && "$(id -u)" -ne 0 ]]; then
-    echo "ERROR: iptables operations require container run with --cap-add=NET_ADMIN"
-    exit 1
-fi
+echo "=== Starting Xray-core VPN ==="
+echo "Xray binary: $XRAY_BIN"
+echo "Config: $XRAY_CONFIG"
+echo "Logs: $LOG_DIR"
+
+# 2️⃣ Запуск Xray-core в фоне
+echo "🚀 Launching Xray-core..."
+"$XRAY_BIN" run -c "$XRAY_CONFIG" &
+XRAY_PID=$!
+echo "✅ Xray-core started (PID: $XRAY_PID)"
 
 # 3️⃣ Запуск мониторинга в фоне
-"${HAPP_DIR}/scripts/happ-monitor.sh" &
+echo "📊 Starting monitor..."
+"$MONITOR_SCRIPT" &
 MONITOR_PID=$!
+echo "✅ Monitor started (PID: $MONITOR_PID)"
 
-# 5️⃣ Watchdog – реакция на SIGTERM/SIGINT
+# 4️⃣ Watchdog – реакция на SIGTERM/SIGINT
 cleanup() {
-    echo "Stopping monitor (PID $MONITOR_PID)…" >&2
+    echo ""
+    echo "⚠️  Stopping services..."
+    echo "Stopping monitor (PID $MONITOR_PID)…"
     kill "$MONITOR_PID" 2>/dev/null || true
+    echo "Stopping Xray-core (PID $XRAY_PID)…"
+    kill "$XRAY_PID" 2>/dev/null || true
+    echo "✅ Cleanup complete"
     exit 0
 }
 trap cleanup SIGINT SIGTERM
 
-# 5️⃣ Таailing log (позволяет видеть live‑логи)
-exec tail -f "${LOG_DIR}/monitor.log"
+# 5️⃣ Tail logs (позволяет видеть live‑логи)
+echo ""
+echo "📋 Watching logs (press Ctrl+C to stop)..."
+echo "=========================================="
+exec tail -f "$LOG_DIR/error.log" "$LOG_DIR/monitor.log"

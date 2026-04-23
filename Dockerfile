@@ -1,21 +1,21 @@
-# Dockerfile for Happ VPN Auto‑Switch
-# Build a lightweight container that runs the Happ monitor and proxy manager
-# on a headless Linux server.
+# Dockerfile for Happ VPN Auto‑Switch (Xray-core based)
+# Build a lightweight container that runs Xray-core directly with auto-switch monitoring
 
 # ---- Base image -----------------------------------------------------------
 FROM ubuntu:22.04
 
 # ---- Metadata -------------------------------------------------------------
 LABEL maintainer="OpenClaw Team <openclaw@happ.su>"
-LABEL description="Docker image for automatic Happ proxy switching with failover"
-LABEL version="1.0"
-LABEL source="https://github.com/Happ-proxy/happ-desktop"
+LABEL description="Docker image for automatic VPN proxy switching using Xray-core"
+LABEL version="2.0"
+LABEL source="https://github.com/XTLS/Xray-core"
 
 # ---- Environment -----------------------------------------------------------
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HAPP_DIR=/opt/happvpn
 ENV STATE_FILE=/opt/happvpn/state.json
 ENV LOG_DIR=/var/log/happvpn
+ENV XRAY_CONFIG=/opt/happvpn/config.json
 
 # Create non‑root user for security
 RUN useradd --uid 1001 --create-home happuser && \
@@ -32,44 +32,40 @@ RUN apt-get update && \
         iptables \
         procps \
         net-tools \
-        systemd && \
+        jq && \
     rm -rf /var/lib/apt/lists/*
 
-# ---- Copy extracted Happ binaries ------------------------------------
-# The build context must contain the folder 'extracted' produced by the
-# tar/zstd extraction steps described earlier.
-# Structure: extracted/opt/happ/bin/{Happ, happd, happ-tcping}
-COPY extracted/opt/happ/bin/Happ ${HAPP_DIR}/Happ
-COPY extracted/opt/happ/bin/happd ${HAPP_DIR}/happd
-COPY extracted/opt/happ/bin/happ-tcping ${HAPP_DIR}/happ-tcping
-COPY extracted/opt/happ/lib ${HAPP_DIR}/lib
-COPY extracted/opt/happ/bin/core ${HAPP_DIR}/core
-COPY extracted/opt/happ/bin/antifilter ${HAPP_DIR}/antifilter
-COPY extracted/opt/happ/bin/tun ${HAPP_DIR}/tun
-COPY extracted/opt/happ/bin/tun2 ${HAPP_DIR}/tun2
-COPY extracted/opt/happ/bin/qt.conf ${HAPP_DIR}/qt.conf
+# ---- Copy Xray-core binaries ----------------------------------------------
+# Xray-core from Happ package
+COPY extracted/opt/happ/bin/core/xray ${HAPP_DIR}/xray
+COPY extracted/opt/happ/bin/core/geoip.dat ${HAPP_DIR}/core/geoip.dat
+COPY extracted/opt/happ/bin/core/geosite.dat ${HAPP_DIR}/core/geosite.dat
+COPY extracted/opt/happ/bin/core/routing ${HAPP_DIR}/core/routing
 
-RUN chmod +x ${HAPP_DIR}/Happ ${HAPP_DIR}/happd ${HAPP_DIR}/happ-tcping
+RUN chmod +x ${HAPP_DIR}/xray
 
-# ---- Copy configuration & helper scripts ----------------------------
+# ---- Copy configuration & helper scripts ----------------------------------
 COPY key.txt ${HAPP_DIR}/key.txt
+COPY scripts/xray-config.json ${HAPP_DIR}/config.json
 COPY scripts/happ-proxy-manager.sh ${HAPP_DIR}/scripts/happ-proxy-manager.sh
 COPY scripts/happ-monitor.sh ${HAPP_DIR}/scripts/happ-monitor.sh
-COPY scripts/happ-config.yaml ${HAPP_DIR}/config.yaml
+COPY scripts/happ-config.yaml ${HAPP_DIR}/happ-config.yaml
+COPY entrypoint.sh ${HAPP_DIR}/entrypoint.sh
 
-# Apply executable permissions
-RUN chmod +x ${HAPP_DIR}/scripts/happ-monitor.sh && \
-    chmod +x ${HAPP_DIR}/scripts/happ-proxy-manager.sh && \
-    chmod +x ${HAPP_DIR}/Happ ${HAPP_DIR}/happd ${HAPP_DIR}/happ-tcping
+RUN chmod +x ${HAPP_DIR}/entrypoint.sh && \
+    chmod +x ${HAPP_DIR}/scripts/happ-monitor.sh && \
+    chmod +x ${HAPP_DIR}/scripts/happ-proxy-manager.sh
 
 # ---- Create runtime directory for logs ------------------------------------
 RUN touch $LOG_DIR/monitor.log && \
-    chown happuser:happuser $LOG_DIR/monitor.log
+    touch $LOG_DIR/access.log && \
+    touch $LOG_DIR/error.log && \
+    chown -R happuser:happuser $LOG_DIR
 
 # ---- Switch to non‑root user ---------------------------------------------
 USER happuser
 WORKDIR $HAPP_DIR
 
 # ---- Entrypoint -----------------------------------------------------------
-# The container will run the monitor in the foreground.
-ENTRYPOINT ["./scripts/happ-monitor.sh"]
+# The container will run Xray-core with monitoring.
+ENTRYPOINT ["./entrypoint.sh"]
