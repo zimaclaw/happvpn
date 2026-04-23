@@ -98,6 +98,14 @@
       },
       {
         "type": "field",
+        "domain": [
+          "domain:.ru",
+          "domain:.su"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "type": "field",
         "outboundTag": "primary"
       }
     ]
